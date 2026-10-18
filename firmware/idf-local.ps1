@@ -17,7 +17,7 @@ if (-not $toolPathLine) { throw 'ESP-IDF tool PATH was not found' }
 $env:PATH = $toolPathLine.Substring(5) + ';' + $env:PATH
 # idf.py resolves substituted drives back to their Unicode paths. Build a
 # synchronized copy in an ASCII-only temporary directory instead.
-$stagePath = Join-Path $env:TEMP 'codex-case-display-01a14a54-v3-ota'
+$stagePath = Join-Path $env:TEMP 'ComputerScreen-esp-idf-v6.1'
 New-Item -ItemType Directory -Path (Join-Path $stagePath 'main') -Force | Out-Null
 foreach ($sourceName in @('CMakeLists.txt', 'sdkconfig.defaults', 'partitions.csv')) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $sourceName) -Destination $stagePath -Force
@@ -34,7 +34,7 @@ try {
     if ($Port) { $IdfArguments = @('-p', $Port) + $IdfArguments }
     & "$env:IDF_PYTHON_ENV_PATH\Scripts\python.exe" "$env:IDF_PATH\tools\idf.py" @IdfArguments
     $idfExitCode = $LASTEXITCODE
-    if ($idfExitCode -eq 0 -and (Test-Path -LiteralPath (Join-Path $stagePath 'build\case_display.bin'))) {
+    if ($idfExitCode -eq 0 -and (Test-Path -LiteralPath (Join-Path $stagePath 'build\project_description.json'))) {
         & "$env:IDF_PYTHON_ENV_PATH\Scripts\python.exe" (Join-Path $PSScriptRoot 'tools\export_ota.py') --build-dir (Join-Path $stagePath 'build') --output-dir (Join-Path $PSScriptRoot 'release')
         if ($LASTEXITCODE -ne 0) { throw 'OTA export failed' }
     }

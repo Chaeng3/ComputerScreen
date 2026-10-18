@@ -1,6 +1,6 @@
-# ESP32-S3 天气时钟固件
+# ComputerScreen · ESP32-S3 天气时钟固件
 
-当前版本 **3.3.0-ota**，基于 ESP-IDF v6.1，适用 ESP32-S3-WROOM-1-N16R8 与 320×240 横向 ST7789 屏。
+当前版本 **3.3.1-ota**，基于 ESP-IDF v6.1，适用 ESP32-S3-WROOM-1-N16R8 与 320×240 横向 ST7789 屏。
 
 构建、接线、首次配网与功能介绍见[项目首页](../README.md)，[OTA 升级说明](OTA.md)及[下载目录](release/README.md)。
 

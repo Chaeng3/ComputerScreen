@@ -41,7 +41,7 @@ async function setup(overrides={},networks=[{ssid:'Home',rssi:-44,secure:true},{
   let ui=await setup();
   assert.equal(ui.element('province').value,'贵州省');assert.equal(ui.element('city').value,guiyang.id);
   assert.equal(ui.element('password').value,'');assert.equal(ui.element('api_key').value,'');
-  await ui.submit();assert.equal(ui.posts.length,1);assert.equal(ui.posts[0].headers['X-Case-Setup'],'1');
+  await ui.submit();assert.equal(ui.posts.length,1);assert.equal(ui.posts[0].headers['X-ComputerScreen-Setup'],'1');
   assert.equal(new URLSearchParams(ui.posts[0].body).get('city'),guiyang.id);
 
   ui=await setup();ui.element('ssid').value='客厅网络';ui.element('password').value='12345678';await ui.submit();

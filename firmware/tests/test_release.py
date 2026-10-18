@@ -16,7 +16,7 @@ def image():
     struct.pack_into('<H', data, 12, 9)
     struct.pack_into('<I', data, 32, 0xABCD5432)
     data[48:59] = b'1.1.0-ota\0\0'
-    data[80:93] = b'case_display\0'
+    data[80:95] = b'ComputerScreen\0'
     return data
 
 

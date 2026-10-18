@@ -5,6 +5,7 @@
 #include "nvs.h"
 #include "esp_log.h"
 
+// Legacy NVS namespace is a storage compatibility key, not the product name.
 #define SETTINGS_VERSION 1
 _Static_assert(sizeof(app_settings_t) == 312, "Keep the v1 NVS settings layout compatible with baseline OTA firmware");
 static app_settings_t current;

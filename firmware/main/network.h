@@ -22,7 +22,7 @@ typedef struct {
     bool time_synced;
     char ip[16];
     char ap_name[33];
-    char ap_password[16];
+    char ap_password[32];
 } network_status_t;
 
 void network_init(void);

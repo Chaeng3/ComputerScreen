@@ -10,6 +10,7 @@
 #include "weather.h"
 #include "ota_update.h"
 #include "lighting.h"
+#include "setup_request.h"
 #include "city_ids.h"
 #include "cJSON.h"
 #include "esp_http_server.h"
@@ -154,9 +155,8 @@ static esp_err_t save(httpd_req_t *req)
         return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "提交格式不正确，请刷新设置页");
     }
     // Browser custom header prevents cross-site form submissions; CORS is not enabled.
-    char marker[8];
-    if (httpd_req_get_hdr_value_str(req, "X-Case-Setup", marker, sizeof(marker)) != ESP_OK ||
-        strcmp(marker, "1")) return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "请通过副屏设置页面提交");
+    if (!computerscreen_setup_request(req))
+        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "请通过副屏设置页面提交");
     if (req->content_len <= 0 || req->content_len >= 2048) {
         return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "提交内容长度不正确");
     }

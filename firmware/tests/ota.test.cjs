@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const script=fs.readFileSync(path.join(__dirname,'../main/ota.js'),'utf8');
-function file({name='case_display-1.1.0-ota.bin',version='1.1.0-ota',project='case_display',chip=9,size=4096,magic=0xe9}={}) {
+function file({name='ComputerScreen-3.3.1-ota.bin',version='3.3.1-ota',project='ComputerScreen',chip=9,size=4096,magic=0xe9}={}) {
   const b=Buffer.alloc(320);b[0]=magic;b[1]=3;b.writeUInt16LE(chip,12);b[23]=1;b.writeUInt32LE(0xabcd5432,32);b.write(version,48);b.write(project,80);
   return {name,size,slice:()=>({arrayBuffer:async()=>Uint8Array.from(b.subarray(0,288)).buffer})};
 }
@@ -29,7 +29,7 @@ async function setup({mode='success',info={version:'1.1.0-ota',max_size:4194304,
   }
   ui=await setup();const valid=file();ui.el('firmwareFile').files=[valid];await ui.upgrade();
   assert.equal(ui.requests.length,1);assert.equal(ui.requests[0].url,'/api/update');assert.equal(ui.requests[0].body,valid);
-  assert.equal(ui.requests[0].headers['X-Case-Setup'],'1');assert.equal(ui.requests[0].headers['Content-Type'],'application/octet-stream');
+  assert.equal(ui.requests[0].headers['X-ComputerScreen-Setup'],'1');assert.equal(ui.requests[0].headers['Content-Type'],'application/octet-stream');
   assert.equal(ui.el('upgradeProgress').value,100);assert.equal(ui.el('save').disabled,true);assert.equal(ui.el('setup').dataset.updating,'1');
   await ui.upgrade();assert.equal(ui.requests.length,1,'Double click must not start a second upload');
   for(const mode of ['reject','network','timeout']) {
@@ -39,5 +39,7 @@ async function setup({mode='success',info={version:'1.1.0-ota',max_size:4194304,
   }
   ui=await setup();ui.el('setup').dataset.saving='1';ui.el('firmwareFile').files=[file()];await ui.upgrade();assert.equal(ui.requests.length,0);
   ui=await setup({info:{version:'1.1.0-ota',max_size:4194304,validating:true}});assert.equal(ui.el('upgrade').disabled,true);
-  console.log('OTA page checks passed: file screening, upload/progress, retries, duplicate clicks and settings interlocks.');
+  ui=await setup();ui.el('firmwareFile').files=[file({project:'case_display',version:'3.3.1-ota'})];
+  await ui.upgrade();assert.equal(ui.requests.length,1,'Accept the transition descriptor for legacy OTA installations');
+  console.log('OTA page checks passed: ComputerScreen and legacy bridge screening, upload/progress, retries, duplicate clicks and settings interlocks.');
 })().catch(error=>{console.error(error);process.exitCode=1;});

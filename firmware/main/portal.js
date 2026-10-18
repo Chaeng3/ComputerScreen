@@ -164,10 +164,10 @@ form.onsubmit = async event => {
   button.textContent = '正在保存…';
   try {
     const response = await fetch('/api/save', {method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded','X-Case-Setup':'1'}, body:new URLSearchParams(values)});
+      headers:{'Content-Type':'application/x-www-form-urlencoded','X-ComputerScreen-Setup':'1'}, body:new URLSearchParams(values)});
     const message = await response.text();
     if (!response.ok) throw Error(message);
-    result.textContent = message + '\n以后修改设置，可连接同一路由器后访问 casescreen.local。';
+    result.textContent = message + '\n以后修改设置，可连接同一路由器后访问 computerscreen.local。';
     button.textContent = '已保存';
   } catch (error) {
     delete form.dataset.saving;

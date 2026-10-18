@@ -1,0 +1,11 @@
+{
+  "project": "case_display",
+  "version": "3.3.1-ota",
+  "chip": "ESP32-S3",
+  "product": "ComputerScreen",
+  "board": "ComputerScreen-S3-N16R8",
+  "partition_layout": 1,
+  "size": 2072976,
+  "sha256": "5539281301c5fb9bf7c5d97946aed2185cf538acafe54b8048a67bee994108a9",
+  "file": "ComputerScreen-3.3.1-ota-bridge.bin"
+}

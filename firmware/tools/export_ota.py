@@ -15,12 +15,12 @@ def describe(data):
         raise ValueError('Expected an application descriptor at offset 32')
     version = data[48:80].split(b'\0', 1)[0].decode('ascii')
     project = data[80:112].split(b'\0', 1)[0].decode('ascii')
-    if project != 'case_display' or not version.endswith('-ota'):
-        raise ValueError('Expected a case_display release supporting OTA')
+    if project not in {'ComputerScreen', 'case_display'} or not version.endswith('-ota'):
+        raise ValueError('Expected a ComputerScreen release supporting OTA')
     if not all(c.isalnum() or c in '.-_' for c in version):
         raise ValueError('Unsafe version string')
     return {'project': project, 'version': version, 'chip': 'ESP32-S3',
-            'board': 'case-display-s3-n16r8', 'partition_layout': 1,
+            'product': 'ComputerScreen', 'board': 'ComputerScreen-S3-N16R8', 'partition_layout': 1,
             'size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
 
 
@@ -29,10 +29,14 @@ def main():
     parser.add_argument('--build-dir', type=Path, required=True)
     parser.add_argument('--output-dir', type=Path, required=True)
     args = parser.parse_args()
-    data = (args.build_dir / 'case_display.bin').read_bytes()
+    project = json.loads((args.build_dir / 'project_description.json').read_text(encoding='utf-8'))['project_name']
+    if project not in {'ComputerScreen', 'case_display'}:
+        raise ValueError('Unexpected build project')
+    data = (args.build_dir / f'{project}.bin').read_bytes()
     manifest = describe(data)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    name = f"case_display-{manifest['version']}.bin"
+    suffix = "-bridge" if manifest["project"] == "case_display" else ""
+    name = f"ComputerScreen-{manifest['version']}{suffix}.bin"
     (args.output_dir / name).write_bytes(data)
     manifest['file'] = name
     (args.output_dir / f"{name}.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

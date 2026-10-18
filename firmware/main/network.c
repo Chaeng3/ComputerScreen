@@ -22,7 +22,7 @@
 static EventGroupHandle_t flags;
 static esp_netif_t *station;
 static char ap_name[33];
-static char ap_password[16];
+static char ap_password[32];
 static const char *TAG = "network";
 static SemaphoreHandle_t scan_lock;
 static network_scan_result_t scan_result;
@@ -105,7 +105,7 @@ static void network_task(void *arg)
             if (!editing && ++online_seconds >= 300 && (xEventGroupGetBits(flags) & AP_ACTIVE)) {
                 ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
                 xEventGroupClearBits(flags, AP_ACTIVE);
-                ESP_LOGI(TAG, "Setup AP closed; settings remain available at http://casescreen.local");
+                ESP_LOGI(TAG, "Setup AP closed; settings remain available at http://computerscreen.local");
             }
         } else {
             online_seconds = 0;
@@ -132,7 +132,7 @@ void network_init(void)
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     station = esp_netif_create_default_wifi_sta();
     assert(station);
-    ESP_ERROR_CHECK(esp_netif_set_hostname(station, "casescreen"));
+    ESP_ERROR_CHECK(esp_netif_set_hostname(station, "computerscreen"));
     esp_netif_t *ap_netif = esp_netif_create_default_wifi_ap();
     assert(ap_netif);
     const wifi_init_config_t init = WIFI_INIT_CONFIG_DEFAULT();
@@ -142,8 +142,8 @@ void network_init(void)
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, event_handler, NULL));
     uint8_t mac[6];
     ESP_ERROR_CHECK(esp_wifi_get_mac(WIFI_IF_AP, mac));
-    snprintf(ap_name, sizeof(ap_name), "CaseScreen-%02X%02X", mac[4], mac[5]);
-    snprintf(ap_password, sizeof(ap_password), "Screen%02X%02X", mac[4], mac[5]);
+    snprintf(ap_name, sizeof(ap_name), "ComputerScreen-%02X%02X", mac[4], mac[5]);
+    snprintf(ap_password, sizeof(ap_password), "ComputerScreen%02X%02X", mac[4], mac[5]);
     wifi_config_t ap = { .ap = {
         .channel = 1, .max_connection = 2, .authmode = WIFI_AUTH_WPA2_PSK,
     } };
@@ -168,9 +168,9 @@ void network_init(void)
         ESP_LOGI(TAG, "Configuration AP enabled: %s; http://192.168.4.1", ap_name);
     }
     ESP_ERROR_CHECK(mdns_init());
-    ESP_ERROR_CHECK(mdns_hostname_set("casescreen"));
-    ESP_ERROR_CHECK(mdns_instance_name_set("机箱副屏设置"));
-    ESP_ERROR_CHECK(mdns_service_add("机箱副屏设置", "_http", "_tcp", 80, NULL, 0));
+    ESP_ERROR_CHECK(mdns_hostname_set("computerscreen"));
+    ESP_ERROR_CHECK(mdns_instance_name_set("ComputerScreen 设置"));
+    ESP_ERROR_CHECK(mdns_service_add("ComputerScreen 设置", "_http", "_tcp", 80, NULL, 0));
     BaseType_t created = xTaskCreate(network_task, "network_watch", 4096, NULL, 4, NULL);
     assert(created == pdPASS);
 }

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>副屏设置</title>
+<title>ComputerScreen 设置</title>
 <style>
 :root{color-scheme:dark;font:16px/1.6 system-ui,sans-serif;background:#0d1726;color:#edf3fc}
 *{box-sizing:border-box}body{margin:0;padding:28px 18px}main{max-width:580px;margin:auto}
@@ -10,7 +10,7 @@ input:focus,select:focus{outline:2px solid #75c9ff}small{color:#b4c4da;display:b
 button{font:inherit;font-weight:650;border:0;border-radius:10px;background:#8cd2ff;color:#10233c;width:100%;padding:14px;cursor:pointer}button:disabled{opacity:.5;cursor:wait}
 #status{padding:10px 14px;border-radius:10px;background:#20354a;color:#ceebff}#result{white-space:pre-wrap}input[type=checkbox]{width:auto;margin-right:8px}a{color:#8cd2ff}
 .secondary{margin-top:10px;background:#273e57;color:#d9edff;padding:9px}select{min-width:0}.row select{padding-left:7px;padding-right:3px}[hidden]{display:none!important}@media(max-width:440px){.location-row{display:block}}</style><main>
-<h1>副屏设置</h1><p>连接网络，让桌边的时间开始流动。</p><div id="status" role="status">正在读取设备状态…</div>
+<h1>ComputerScreen</h1><p>连接网络，让桌边的时间开始流动。</p><div id="status" role="status">正在读取设备状态…</div>
 <form id="setup"><section><h2>连接 Wi-Fi</h2>
 <label for="ssid">选择 Wi-Fi</label><select id="ssid" name="ssid" required><option value="">请选择 Wi-Fi</option></select><button id="scan" class="secondary" type="button">扫描附近网络</button><small id="wifiHint" role="status">自动扫描附近的 2.4 GHz 网络，支持中文名称。</small><label><input type="checkbox" id="manual_wifi">找不到网络？手动输入</label><input id="manual_ssid" maxlength="32" placeholder="隐藏网络名称" hidden autocomplete="off">
 <label for="password">Wi-Fi 密码</label><input id="password" name="password" type="password" maxlength="63" autocomplete="new-password"><small id="passwordHint">请输入 Wi-Fi 密码。</small>
@@ -29,11 +29,11 @@ button{font:inherit;font-weight:650;border:0;border-radius:10px;background:#8cd2
 <div><label for="night">夜间</label><input id="night" name="night" type="time" required value="19:00"></div></div>
 <small>背景始终为纯黑色；三个时段控制点缀色，白天和夜间时间同时用于亮度计划。</small></section>
 <button id="save" disabled>保存并重启</button><p id="result" role="status"></p></form>
-<p>以后修改设置：手机连接同一路由器，打开 <a href="http://casescreen.local/">casescreen.local</a>，建议收藏。若访问不了，可在路由器设备列表中查找 casescreen。每次上电会开放临时设置热点；连接原网络失败时也会自动恢复热点，无需拆机按键。</p>
+<p>以后修改设置：手机连接同一路由器，打开 <a href="http://computerscreen.local/">computerscreen.local</a>，建议收藏。若访问不了，可在路由器设备列表中查找 computerscreen。每次上电会开放临时设置热点；连接原网络失败时也会自动恢复热点，无需拆机按键。</p>
 <section><h2>固件升级</h2><p id="firmwareInfo" role="status">正在读取固件版本…</p>
 <p>选择本项目提供的 OTA 升级文件，通过 Wi-Fi 更新，无需拆机接 USB。升级保留已保存的网络、城市、天气密钥和亮度。</p>
 <label for="firmwareFile">升级文件（.bin）</label><input id="firmwareFile" type="file" accept=".bin,application/octet-stream">
-<small>文件名形如 case_display-版本号-ota.bin。请勿选择完整烧录镜像、引导程序或分区表。</small>
+<small>文件名形如 ComputerScreen-版本号-ota.bin。请勿选择完整烧录镜像、引导程序或分区表。</small>
 <button id="upgrade" class="secondary" type="button" disabled>上传并升级</button>
 <progress id="upgradeProgress" value="0" max="100" style="width:100%;margin-top:14px" hidden></progress>
 <p id="upgradeStatus" role="status">升级时保持供电。上传或校验失败会继续使用原版本，新版本首次启动失败时支持回退。</p>

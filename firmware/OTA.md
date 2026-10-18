@@ -1,14 +1,22 @@
 # Wi-Fi 固件升级
 
-当前对外版本为 **3.3**，固件内标识 `3.3.0-ota`；此前 1.x 为开发阶段编号。
+当前对外版本为 **3.3**，固件内标识 `3.3.1-ota`；此前 1.x 为开发阶段编号。
 
 安装 OTA 版本后，日常固件更新通过手机或电脑网页完成，无需按键或拆机连接 USB。
 
+**已知问题：部分环境的热点 OTA 上传仍会超时或中断，稳定性待修复。**
+
+## 旧名称迁移
+
+从 3.3.0-ota 或更早的 ESP-IDF OTA 版本升级时，先上传 [ComputerScreen-3.3.1-ota-bridge.bin](release/ComputerScreen-3.3.1-ota-bridge.bin)，重启后再上传 [正式包](release/ComputerScreen-3.3.1-ota.bin)。旧版按 `case_display` 校验应用名，过渡包保留该内部标识，同时允许后续升级到 ComputerScreen。热点、页面和主机名在过渡包中也已更新。
+
+设置热点改为 `ComputerScreen-XXXX`，密码改为 `ComputerScreenXXXX`，末四位不变；保存的路由器 Wi-Fi、城市和天气私钥保留。旧 NVS 存储名称仅作为内部兼容键保留，避免丢失已有设置。旧版 Arduino OLED 不适用此迁移流程。
+
 ## 操作
 
-1. 手机与副屏连接同一网络，打开 `http://casescreen.local/`；域名不通时从路由器设备列表查找 `casescreen` 的 IP。
-2. 或重新给副屏上电，连接屏幕对应的 `CaseScreen-XXXX` 设置热点，使用屏幕显示的密码，在浏览器打开 `http://192.168.4.1/`。电脑与副屏处于不同网段时也可使用这种方法。
-3. 在“固件升级”中选择本项目提供的 `case_display-版本号-ota.bin`，点击“上传并升级”。
+1. 手机与副屏连接同一网络，打开 `http://computerscreen.local/`；域名不通时从路由器设备列表查找 `computerscreen` 的 IP。
+2. 或重新给副屏上电，连接屏幕对应的 `ComputerScreen-XXXX` 设置热点，使用屏幕显示的密码，在浏览器打开 `http://192.168.4.1/`。电脑与副屏处于不同网段时也可使用这种方法。
+3. 在“固件升级”中选择本项目提供的 `ComputerScreen-版本号-ota.bin`，点击“上传并升级”。
 4. 上传达到 100% 后继续等待镜像校验；成功后自动重启，约 30 秒后刷新页面确认版本。
 5. 连接设置热点时，重启会短暂断网，必要时重新连接同名热点。
 
@@ -40,6 +48,6 @@
 
 ## 开发与验证
 
-升级版本时修改根 CMakeLists 中的 `PROJECT_VER`，保留 `-ota` 后缀。用 ESP-IDF 构建后，上传 `build/case_display.bin`，或通过 `tools/export_ota.py` 导出命名后的文件。
+升级版本时修改根 CMakeLists 中的 `PROJECT_VER`，保留 `-ota` 后缀。用 ESP-IDF 构建后，上传 `build/ComputerScreen.bin`，或通过 `tools/export_ota.py` 导出命名后的文件。
 
 已实测：正常 Wi-Fi 更新、缺失同源请求头、错误芯片、非 OTA 版本、512 字节后中断上传、完整上传损坏文件，以及新分区首次启动确认前复位后回退。这里的启动中断由串口 RTS 复位模拟，未进行真实断电写入测试。

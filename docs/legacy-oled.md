@@ -1,3 +1,5 @@
+# ComputerScreen · 旧版 OLED 使用说明
+
 ![20240803_131214](https://github.com/user-attachments/assets/8ed0e75a-d947-47c5-9d72-7d17b410ce33)
 ![20240803_131117](https://github.com/user-attachments/assets/59e0317e-22f7-48bf-8061-88339580a26b)
 

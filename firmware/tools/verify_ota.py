@@ -24,6 +24,7 @@ def main():
         conn = connect()
         headers = {'Content-Type': 'application/octet-stream'}
         if marker:
+            headers['X-ComputerScreen-Setup'] = '1'
             headers['X-Case-Setup'] = '1'
         conn.request(method, path, data, headers)
         response = conn.getresponse()
@@ -63,6 +64,7 @@ def main():
     conn = connect()
     conn.putrequest('POST', '/api/update')
     conn.putheader('Content-Type', 'application/octet-stream')
+    conn.putheader('X-ComputerScreen-Setup', '1')
     conn.putheader('X-Case-Setup', '1')
     conn.putheader('Content-Length', str(len(data)))
     conn.endheaders()

@@ -1,4 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
-set(PROJECT_VER "3.3.0-ota")
+set(PROJECT_VER "3.3.1-ota")
+option(COMPUTERSCREEN_LEGACY_BRIDGE "Build a transition image accepted by pre-rename OTA firmware" OFF)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(case_display)
+if(COMPUTERSCREEN_LEGACY_BRIDGE)
+    # Old OTA validators require this descriptor; all displayed branding is ComputerScreen.
+    project(case_display)
+else()
+    project(ComputerScreen)
+endif()

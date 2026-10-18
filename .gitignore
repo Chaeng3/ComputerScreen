@@ -14,3 +14,8 @@
 tmp/
 .vscode/
 .idea/
+
+# Hardware documents are kept locally, not distributed in the repository.
+hardware/*.tel
+hardware/BOM*.xlsx
+hardware/datasheets/

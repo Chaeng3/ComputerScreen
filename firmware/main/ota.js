@@ -8,7 +8,7 @@
       if (!response.ok) throw Error('读取失败');
       const info = await response.json();
       limit = info.max_size;
-      el('firmwareInfo').textContent = '当前版本：' + info.version +
+      el('firmwareInfo').textContent = 'ComputerScreen · 当前版本：' + info.version +
         (info.validating ? ' · 正在验证新版本，请约 30 秒后刷新' : info.restarting ? ' · 正在重启' : '');
       el('upgrade').disabled = info.validating || info.restarting || !limit;
     } catch (error) {
@@ -32,7 +32,7 @@
       const view = new DataView(bytes.buffer);
       const text = (start, size) => String.fromCharCode(...bytes.slice(start, start + size)).split('\0')[0];
       if (bytes.length !== 288 || bytes[0] !== 0xe9 || view.getUint16(12, true) !== 9 || bytes[23] !== 1 ||
-          view.getUint32(32, true) !== 0xabcd5432 || text(80,32) !== 'case_display' || !text(48,32).endsWith('-ota'))
+          view.getUint32(32, true) !== 0xabcd5432 || !['ComputerScreen','case_display'].includes(text(80,32)) || !text(48,32).endsWith('-ota'))
         throw Error('不是兼容的副屏 OTA 升级文件，请检查文件。');
       progress.hidden = false;
       progress.value = 0;
@@ -41,7 +41,7 @@
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/update');
         xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-        xhr.setRequestHeader('X-Case-Setup', '1');
+        xhr.setRequestHeader('X-ComputerScreen-Setup', '1');
         xhr.timeout = 330000;
         xhr.upload.onprogress = event => {
           if (!event.lengthComputable) return;

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ota_update.h"
+#include "setup_request.h"
 #include "esp_app_desc.h"
 #include "esp_app_format.h"
 #include "esp_ota_ops.h"
@@ -38,6 +39,8 @@ static esp_err_t firmware_info(httpd_req_t *req)
     const esp_partition_t *next = esp_ota_get_next_update_partition(NULL);
     cJSON *root = cJSON_CreateObject();
     if (!root) return ESP_FAIL;
+    cJSON_AddStringToObject(root, "product", "ComputerScreen");
+    cJSON_AddStringToObject(root, "project", app->project_name);
     cJSON_AddStringToObject(root, "version", app->version);
     cJSON_AddStringToObject(root, "partition", running->label);
     cJSON_AddStringToObject(root, "built", app->date);
@@ -58,13 +61,12 @@ static bool valid_prefix(const uint8_t *bytes)
 {
     const esp_image_header_t *header = (const esp_image_header_t *)bytes;
     const esp_app_desc_t *image = (const esp_app_desc_t *)(bytes + sizeof(*header) + sizeof(esp_image_segment_header_t));
-    const esp_app_desc_t *running = esp_app_get_description();
     // Reject merged images, bootloaders, other boards/projects and pre-OTA releases
     // before erasing anything. The SDK validates the complete image at ota_end.
     if (header->magic != ESP_IMAGE_HEADER_MAGIC || header->chip_id != ESP_CHIP_ID_ESP32S3 ||
         header->hash_appended != 1 || header->segment_count < 1 || header->segment_count > ESP_IMAGE_MAX_SEGMENTS ||
         image->magic_word != ESP_APP_DESC_MAGIC_WORD || !memchr(image->project_name, 0, sizeof(image->project_name)) ||
-        strcmp(image->project_name, running->project_name) || !memchr(image->version, 0, sizeof(image->version))) return false;
+        (strcmp(image->project_name, "ComputerScreen") && strcmp(image->project_name, "case_display")) || !memchr(image->version, 0, sizeof(image->version))) return false;
     size_t length = strlen(image->version);
     return length > 4 && !strcmp(image->version + length - 4, "-ota");
 }
@@ -79,8 +81,8 @@ static void restart_task(void *arg)
 static esp_err_t upload(httpd_req_t *req)
 {
     response_headers(req);
-    char marker[8], type[64];
-    if (httpd_req_get_hdr_value_str(req, "X-Case-Setup", marker, sizeof(marker)) != ESP_OK || strcmp(marker, "1") ||
+    char type[64];
+    if (!computerscreen_setup_request(req) ||
         httpd_req_get_hdr_value_str(req, "Content-Type", type, sizeof(type)) != ESP_OK ||
         strcmp(type, "application/octet-stream"))
         return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "请通过副屏设置页上传升级文件");
@@ -101,7 +103,7 @@ static esp_err_t upload(httpd_req_t *req)
     }
     if (!valid_prefix(buffer)) {
         free(buffer);
-        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "不是兼容的副屏 OTA 固件，请选择 case_display-版本号-ota.bin");
+        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "不是兼容的副屏 OTA 固件，请选择 ComputerScreen-版本号-ota.bin");
     }
     esp_ota_handle_t handle = 0;
     esp_err_t error = esp_ota_begin(target, req->content_len, &handle);
