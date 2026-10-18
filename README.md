@@ -8,7 +8,7 @@
 
 | 版本 | 硬件与环境 | 功能及入口 |
 | --- | --- | --- |
-| 当前版本 1.3.0-ota | ESP32-S3-WROOM-1-N16R8、320×240 横屏、ESP-IDF v6.1 | 中文天气时钟、网页设置、分时亮度、Wi-Fi OTA；源码见 [firmware](firmware/) |
+| 当前版本 3.3.0-ota | ESP32-S3-WROOM-1-N16R8、320×240 横屏、ESP-IDF v6.1 | 中文天气时钟、网页设置、分时亮度、Wi-Fi OTA；源码见 [firmware](firmware/) |
 | 旧版 2.8 / 2.91 / 2.92 | ESP32、2.42 寸 OLED、Arduino | AIDA64 的 CPU / RAM / GPU 监控及关机时钟；[原使用说明](docs/legacy-oled.md) |
 
 旧版 Arduino 源码仍保留在根目录。两代硬件的驱动、接线和升级文件不同；旧版 AIDA64 监控功能尚未迁移到当前 ESP-IDF 固件。
@@ -56,10 +56,10 @@ Wi-Fi 密码和天气私钥保存于设备，不写入源码，也不会在设�
 
 ## 固件下载与更新
 
-当前版本：**1.3.0-ota**。
+当前版本：**3.3.0-ota**。
 
-- [下载 OTA 应用固件](firmware/release/case_display-1.3.0-ota.bin)
-- [文件大小及 SHA-256 清单](firmware/release/case_display-1.3.0-ota.bin.json)
+- [下载 OTA 应用固件](firmware/release/case_display-3.3.0-ota.bin)
+- [文件大小及 SHA-256 清单](firmware/release/case_display-3.3.0-ota.bin.json)
 - [首次 USB 安装文件与说明](firmware/release/README.md)
 - [无线升级使用说明](firmware/OTA.md)
 
@@ -98,7 +98,9 @@ python tests/test_release.py
 
 ## 更新记录
 
-- **1.3.0-ota**：底部大天气图标及对称中文天气区域，温度与城市日期居中。
+新版对外统一使用 **3.x** 编号，当前为 **3.3**（固件标识 `3.3.0-ota`）；此前 1.x 为开发阶段编号。
+
+- **3.3.0-ota**：统一新版正式编号，包含网页 OTA、分时亮度、大天气图标和对称中文布局。
 - **1.2.0-ota**：夜间独立亮度、缓慢渐变及旧配置兼容。
 - **1.1.0-ota**：网页升级、基础应用与双 OTA 分区、首次启动确认与回退。
 - **旧版 2.92**：Arduino + OLED，修复时钟准确度；历史记录见[旧版说明](docs/legacy-oled.md)。

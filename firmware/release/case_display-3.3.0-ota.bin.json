@@ -1,0 +1,10 @@
+{
+  "project": "case_display",
+  "version": "3.3.0-ota",
+  "chip": "ESP32-S3",
+  "board": "case-display-s3-n16r8",
+  "partition_layout": 1,
+  "size": 2072528,
+  "sha256": "df43b648e99ce1b7a50e4e83dd6753300beddd8e5179851962bcc0e04d5e68e8",
+  "file": "case_display-3.3.0-ota.bin"
+}
