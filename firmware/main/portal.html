@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>副屏设置</title>
+<style>
+:root{color-scheme:dark;font:16px/1.6 system-ui,sans-serif;background:#0d1726;color:#edf3fc}
+*{box-sizing:border-box}body{margin:0;padding:28px 18px}main{max-width:580px;margin:auto}
+h1{font-size:30px;margin:0}p{color:#a9bad0}section{background:#162236;border:1px solid #2a3b53;border-radius:18px;padding:22px;margin:20px 0}
+h2{font-size:18px;margin:0 0 16px}label{display:block;margin:14px 0 5px}input,select{font:inherit;width:100%;padding:11px 12px;border:1px solid #42546f;border-radius:9px;background:#101b2b;color:inherit}
+input:focus,select:focus{outline:2px solid #75c9ff}small{color:#b4c4da;display:block;margin-top:5px}.row{display:flex;gap:14px}.row>div{flex:1;min-width:0}
+button{font:inherit;font-weight:650;border:0;border-radius:10px;background:#8cd2ff;color:#10233c;width:100%;padding:14px;cursor:pointer}button:disabled{opacity:.5;cursor:wait}
+#status{padding:10px 14px;border-radius:10px;background:#20354a;color:#ceebff}#result{white-space:pre-wrap}input[type=checkbox]{width:auto;margin-right:8px}a{color:#8cd2ff}
+.secondary{margin-top:10px;background:#273e57;color:#d9edff;padding:9px}select{min-width:0}.row select{padding-left:7px;padding-right:3px}[hidden]{display:none!important}@media(max-width:440px){.location-row{display:block}}</style><main>
+<h1>副屏设置</h1><p>连接网络，让桌边的时间开始流动。</p><div id="status" role="status">正在读取设备状态…</div>
+<form id="setup"><section><h2>连接 Wi-Fi</h2>
+<label for="ssid">选择 Wi-Fi</label><select id="ssid" name="ssid" required><option value="">请选择 Wi-Fi</option></select><button id="scan" class="secondary" type="button">扫描附近网络</button><small id="wifiHint" role="status">自动扫描附近的 2.4 GHz 网络，支持中文名称。</small><label><input type="checkbox" id="manual_wifi">找不到网络？手动输入</label><input id="manual_ssid" maxlength="32" placeholder="隐藏网络名称" hidden autocomplete="off">
+<label for="password">Wi-Fi 密码</label><input id="password" name="password" type="password" maxlength="63" autocomplete="new-password"><small id="passwordHint">请输入 Wi-Fi 密码。</small>
+<label><input name="open_wifi" id="open_wifi" type="checkbox" value="1">这是无需密码的开放网络</label>
+</section><section><h2>天气城市</h2>
+<div class="row location-row"><div><label for="province">省份</label><select id="province" required><option value="">请选择省份</option></select></div><div><label for="city">城市</label><select id="city" name="city" required><option value="">请选择城市</option></select></div></div><small>使用内置中文省市列表，首次配网无需连接互联网。</small>
+<label for="api_key">心知天气私钥</label><input id="api_key" name="api_key" type="password" maxlength="96" autocomplete="new-password"><small id="keyHint">填写 API 产品的私钥，保存后自动获取天气；留空保留已有密钥。</small>
+<small id="weatherStatus" role="status"></small></section><section><h2>显示偏好</h2>
+<label for="brightness">日常亮度 <output id="brightnessValue">25</output>%</label><input id="brightness" name="brightness" type="range" min="1" max="100" value="25">
+<label><input id="auto_dim" name="auto_dim" type="checkbox" value="1" checked>夜间自动调整亮度</label>
+<div id="nightBrightnessRow"><label for="night_brightness">夜间亮度 <output id="nightBrightnessValue">8</output>%</label><input id="night_brightness" name="night_brightness" type="range" min="1" max="100" value="8"></div>
+<small>夜间开始后使用夜间亮度，次日白天开始时恢复日常亮度，切换时缓慢渐变。关闭自动调整后，全天使用日常亮度。</small>
+<p>北京时间，24 小时制。点缀配色的开始时间：</p><div class="row">
+<div><label for="day">白天</label><input id="day" name="day" type="time" required value="06:00"></div>
+<div><label for="dusk">黄昏</label><input id="dusk" name="dusk" type="time" required value="17:00"></div>
+<div><label for="night">夜间</label><input id="night" name="night" type="time" required value="19:00"></div></div>
+<small>背景始终为纯黑色；三个时段控制点缀色，白天和夜间时间同时用于亮度计划。</small></section>
+<button id="save" disabled>保存并重启</button><p id="result" role="status"></p></form>
+<p>以后修改设置：手机连接同一路由器，打开 <a href="http://casescreen.local/">casescreen.local</a>，建议收藏。若访问不了，可在路由器设备列表中查找 casescreen。每次上电会开放临时设置热点；连接原网络失败时也会自动恢复热点，无需拆机按键。</p>
+<section><h2>固件升级</h2><p id="firmwareInfo" role="status">正在读取固件版本…</p>
+<p>选择本项目提供的 OTA 升级文件，通过 Wi-Fi 更新，无需拆机接 USB。升级保留已保存的网络、城市、天气密钥和亮度。</p>
+<label for="firmwareFile">升级文件（.bin）</label><input id="firmwareFile" type="file" accept=".bin,application/octet-stream">
+<small>文件名形如 case_display-版本号-ota.bin。请勿选择完整烧录镜像、引导程序或分区表。</small>
+<button id="upgrade" class="secondary" type="button" disabled>上传并升级</button>
+<progress id="upgradeProgress" value="0" max="100" style="width:100%;margin-top:14px" hidden></progress>
+<p id="upgradeStatus" role="status">升级时保持供电。上传或校验失败会继续使用原版本，新版本首次启动失败时支持回退。</p>
+</section></main><script src="/portal.js"></script><script src="/ota.js"></script></html>

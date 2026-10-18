@@ -1,0 +1,4 @@
+# Preserve native hardware exports without line-ending or whitespace rewrites.
+hardware/** -text -whitespace
+*.bin binary
+*.rgb565 binary

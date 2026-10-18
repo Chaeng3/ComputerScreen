@@ -1,0 +1,16 @@
+# Build products and local SDK configuration
+**/build/
+**/build-ascii/
+**/managed_components/
+**/sdkconfig
+**/sdkconfig.old
+**/backups/
+**/__pycache__/
+*.pyc
+*.log
+.env
+.env.*
+!.env.example
+tmp/
+.vscode/
+.idea/
