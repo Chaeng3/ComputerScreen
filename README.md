@@ -2,6 +2,8 @@
 
 基于 ESP32 的电脑机箱副屏项目。当前主版本使用 **ESP32-S3 + ST7789 彩屏 + ESP-IDF**，显示中文时间、日期、天气实况与逐日预报，支持手机配网、分时亮度和网页 OTA 升级。
 
+![ComputerScreen 效果展示四](docs/images/ComputerScreen-showcase-4.jpg)
+
 ![机箱内实物效果](docs/images/ComputerScreen.jpg)
 
 ![ComputerScreen 实物展示一](docs/images/ComputerScreen-showcase-1.jpg)
