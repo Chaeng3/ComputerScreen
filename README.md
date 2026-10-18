@@ -4,6 +4,10 @@
 
 ![机箱内实物效果](docs/images/ComputerScreen.jpg)
 
+![ComputerScreen 实物展示一](docs/images/ComputerScreen-showcase-1.jpg)
+
+![ComputerScreen 实物展示二](docs/images/ComputerScreen-showcase-2.jpg)
+
 ## 两代硬件
 
 | 版本 | 硬件与环境 | 功能及入口 |
@@ -108,5 +112,3 @@ python tests/test_release.py
 - **1.2.0-ota**：夜间独立亮度、缓慢渐变及旧配置兼容。
 - **1.1.0-ota**：网页升级、基础应用与双 OTA 分区、首次启动确认与回退。
 - **旧版 2.92**：Arduino + OLED，修复时钟准确度；历史记录见[旧版说明](docs/legacy-oled.md)。
-
-[早期外观一](docs/images/ComputerScreen-early-1.jpg) · [早期外观二](docs/images/ComputerScreen-early-2.jpg)
