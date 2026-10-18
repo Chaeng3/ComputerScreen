@@ -66,6 +66,20 @@ static void weather_icon(int x, int y, int code)
     bool snow = code >= 20 && code <= 25;
     bool rain = code >= 10 && code <= 19;
     bool crescent = code == 1 || code == 3 || code == 5 || code == 7;
+    // Align each complete silhouette (including rays, rain and snow) to the
+    // same 84x84 area's center. Pixel rounding leaves at most half a pixel.
+    if (sun) {
+        if (crescent) y -= 1;
+    } else if (code == 4) {
+        x += 3;
+        y += 10;
+    } else {
+        x -= 1;
+        if (code == 5 || code == 7) y += 5;
+        else if (rain) y += (code == 11 || code == 12) ? 1 : 2;
+        else if (snow) y += 2;
+        else y += 4;
+    }
     if (sun) {
         weather_sun(x + 42, y + 42, 23, crescent);
         return;

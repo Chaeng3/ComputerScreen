@@ -1,6 +1,6 @@
 # Wi-Fi 固件升级
 
-当前对外版本为 **3.3**，固件内标识 `3.3.1-ota`；此前 1.x 为开发阶段编号。
+当前对外版本为 **3.3**，固件内标识 `3.3.2-ota`；此前 1.x 为开发阶段编号。
 
 安装 OTA 版本后，日常固件更新通过手机或电脑网页完成，无需按键或拆机连接 USB。
 
@@ -8,7 +8,7 @@
 
 ## 旧名称迁移
 
-从 3.3.0-ota 或更早的 ESP-IDF OTA 版本升级时，先上传 [ComputerScreen-3.3.1-ota-bridge.bin](release/ComputerScreen-3.3.1-ota-bridge.bin)，重启后再上传 [正式包](release/ComputerScreen-3.3.1-ota.bin)。旧版按 `case_display` 校验应用名，过渡包保留该内部标识，同时允许后续升级到 ComputerScreen。热点、页面和主机名在过渡包中也已更新。
+从 3.3.0-ota 或更早的 ESP-IDF OTA 版本升级时，先上传 [ComputerScreen-3.3.1-ota-bridge.bin](release/ComputerScreen-3.3.1-ota-bridge.bin)，重启后再上传 [正式包](release/ComputerScreen-3.3.2-ota.bin)。旧版按 `case_display` 校验应用名，过渡包保留该内部标识，同时允许后续升级到 ComputerScreen。热点、页面和主机名在过渡包中也已更新。
 
 设置热点改为 `ComputerScreen-XXXX`，密码改为 `ComputerScreenXXXX`，末四位不变；保存的路由器 Wi-Fi、城市和天气私钥保留。旧 NVS 存储名称仅作为内部兼容键保留，避免丢失已有设置。旧版 Arduino OLED 不适用此迁移流程。
 

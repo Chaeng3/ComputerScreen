@@ -1,0 +1,11 @@
+{
+  "project": "ComputerScreen",
+  "version": "3.3.2-ota",
+  "chip": "ESP32-S3",
+  "product": "ComputerScreen",
+  "board": "ComputerScreen-S3-N16R8",
+  "partition_layout": 1,
+  "size": 2073056,
+  "sha256": "276727ee49eec22801b07ddf1663a40bad9e8f60069d15f4c601558b92f59eae",
+  "file": "ComputerScreen-3.3.2-ota.bin"
+}

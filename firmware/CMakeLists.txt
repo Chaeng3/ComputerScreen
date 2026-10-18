@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-set(PROJECT_VER "3.3.1-ota")
+set(PROJECT_VER "3.3.2-ota")
 option(COMPUTERSCREEN_LEGACY_BRIDGE "Build a transition image accepted by pre-rename OTA firmware" OFF)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 if(COMPUTERSCREEN_LEGACY_BRIDGE)
