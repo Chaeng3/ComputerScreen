@@ -4,13 +4,7 @@
 
 ![Uploading 20261109_220316.jpg…]()
 
-![ComputerScreen 效果展示四](docs/images/ComputerScreen-showcase-4.jpg)
-
-![机箱内实物效果](docs/images/ComputerScreen.jpg)
-
-![ComputerScreen 实物展示一](docs/images/ComputerScreen-showcase-1.jpg)
-
-![ComputerScreen 实物展示二](docs/images/ComputerScreen-showcase-2.jpg)
+![Uploading 20261030_222934.jpg…]()
 
 ## 两代硬件
 
