@@ -1,7 +1,7 @@
 # 固件下载
 
-- 当前 OTA 文件：[ComputerScreen-3.3.2-ota.bin](ComputerScreen-3.3.2-ota.bin)
-- [大小与 SHA-256 清单](ComputerScreen-3.3.2-ota.bin.json)
+- 当前 OTA 文件：[ComputerScreen-3.5.13-ota.bin](ComputerScreen-3.5.13-ota.bin)
+- [大小与 SHA-256 清单](ComputerScreen-3.5.13-ota.bin.json)
 
 已经安装 ComputerScreen 固件时，只需在设置网页上传正式应用 `.bin`。
 

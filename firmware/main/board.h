@@ -13,3 +13,12 @@
 #define LCD_MIRROR_X 0
 #define LCD_MIRROR_Y 1
 #define LCD_INVERT_COLORS 1
+
+// Netlist_Schematic1_2026-11-09.tel
+#define AHT_PIN_SCL 1
+#define AHT_PIN_SDA 2
+#define STATUS_LED_PIN 38
+#define EFFECT_LED_PIN 7
+#define MIC_PIN_SCK 4
+#define MIC_PIN_WS 5
+#define MIC_PIN_SD 6

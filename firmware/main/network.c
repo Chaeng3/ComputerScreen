@@ -143,7 +143,7 @@ void network_init(void)
     uint8_t mac[6];
     ESP_ERROR_CHECK(esp_wifi_get_mac(WIFI_IF_AP, mac));
     snprintf(ap_name, sizeof(ap_name), "ComputerScreen-%02X%02X", mac[4], mac[5]);
-    snprintf(ap_password, sizeof(ap_password), "ComputerScreen%02X%02X", mac[4], mac[5]);
+    strlcpy(ap_password, "12345678", sizeof(ap_password));
     wifi_config_t ap = { .ap = {
         .channel = 1, .max_connection = 2, .authmode = WIFI_AUTH_WPA2_PSK,
     } };

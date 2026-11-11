@@ -14,7 +14,7 @@
 
 | 版本 | 硬件与环境 | 功能及入口 |
 | --- | --- | --- |
-| 当前版本 3.3.2-ota | ESP32-S3-WROOM-1-N16R8、320×240 横屏、ESP-IDF v6.1 | 中文天气时钟、网页设置、分时亮度、Wi-Fi OTA；源码见 [firmware](firmware/) |
+| 当前版本 3.5.13-ota | ESP32-S3-WROOM-1-N16R8、320×240 横屏、ESP-IDF v6.1 | 中文天气时钟、温湿度彗星、拾音灯效、网页设置、Wi-Fi OTA；源码见 [firmware](firmware/) |
 | 旧版 2.8 / 2.91 / 2.92 | ESP32、2.42 寸 OLED、Arduino | AIDA64 的 CPU / RAM / GPU 监控及关机时钟；[原使用说明](docs/legacy-oled.md) |
 
 旧版 Arduino 源码仍保留在根目录。两代硬件的驱动、接线和升级文件不同；旧版 AIDA64 监控功能尚未迁移到当前 ESP-IDF 固件。
@@ -52,7 +52,7 @@
 
 ## 首次使用
 
-1. 首次安装固件并上电后，屏幕显示设置热点 `ComputerScreen-XXXX`，密码为 `ComputerScreenXXXX`（末四位与热点一致，区分大小写）。
+1. 首次安装固件并上电后，屏幕显示设置热点 `ComputerScreen-XXXX`，配网热点密码为 `12345678`。
 2. 手机连接热点，在浏览器打开 `http://192.168.4.1/`。
 3. 扫描并选择 2.4 GHz Wi-Fi，选择省份和城市，填入自己的心知天气 **API 私钥**，保存并重启。
 4. 设备联网后自动校时和获取天气。以后让手机与副屏连接同一网络，访问 `http://computerscreen.local/` 修改设置。
@@ -65,10 +65,10 @@ Wi-Fi 密码和天气私钥保存于设备，不写入源码，也不会在设�
 
 **已知问题：部分环境的热点 OTA 上传会超时或中断，稳定性仍待修复。** 校验及回退机制保留，但此前成功测试不代表当前传输已稳定。
 
-当前版本：**3.3.2-ota**。
+当前版本：**3.5.13-ota**。
 
-- [下载 OTA 应用固件](firmware/release/ComputerScreen-3.3.2-ota.bin)
-- [文件大小及 SHA-256 清单](firmware/release/ComputerScreen-3.3.2-ota.bin.json)
+- [下载 OTA 应用固件](firmware/release/ComputerScreen-3.5.13-ota.bin)
+- [文件大小及 SHA-256 清单](firmware/release/ComputerScreen-3.5.13-ota.bin.json)
 - [首次 USB 安装文件与说明](firmware/release/README.md)
 - [无线升级使用说明](firmware/OTA.md)
 
@@ -111,8 +111,9 @@ python tests/test_release.py
 
 ## 更新记录
 
-新版对外统一使用 **3.x** 编号，当前为 **3.3**（固件标识 `3.3.2-ota`）；此前 1.x 为开发阶段编号。
+新版对外统一使用 **3.x** 编号，当前为 **3.5.13**（固件标识 `3.5.13-ota`）；此前 1.x 为开发阶段编号。
 
+- **3.5.13-ota**：支持新版主板上的 AHT20、I²S 麦克风及两路 RGB 灯，加入温度彗星、拾音灯效和紧凑天气布局。
 - **3.3.2-ota**：逐类校正天气图标的视觉中心，保留图标颜色、秒数和横线的分时换色规则；没有增加新的天气图案。
 - **3.3.1-ota**：统一 ComputerScreen 命名，包含新热点/主机名和旧 OTA 过渡包；网表、BOM、规格书不随仓库发布。
 - **3.3.0-ota**：统一新版正式编号，包含网页 OTA、分时亮度、大天气图标和对称中文布局。

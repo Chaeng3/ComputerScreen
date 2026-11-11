@@ -22,7 +22,16 @@ typedef struct {
     uint32_t night_brightness;
 } lighting_settings_t;
 
+typedef enum { RGB_OFF, RGB_SOLID, RGB_RAINBOW, RGB_BREATHE, RGB_SOUND, RGB_MODE_COUNT } rgb_mode_t;
+typedef struct {
+    uint32_t mode;
+    uint32_t color;
+    uint32_t brightness;
+} rgb_settings_t;
+
 void settings_init(void);
 const app_settings_t *settings_get(void);
 const lighting_settings_t *settings_get_lighting(void);
 esp_err_t settings_save(const app_settings_t *settings, const lighting_settings_t *lighting);
+rgb_settings_t settings_get_rgb(void);
+esp_err_t settings_save_rgb(rgb_settings_t rgb);

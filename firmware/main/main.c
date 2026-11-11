@@ -13,6 +13,7 @@
 #include "clock_ui.h"
 #include "ota_update.h"
 #include "lighting.h"
+#include "case_environment.h"
 
 void app_main(void)
 {
@@ -27,6 +28,7 @@ void app_main(void)
     network_init();
     weather_init();
     portal_init();
+    case_environment_init();
     ESP_LOGI("clock", "Chinese clock and Seniverse weather ready");
     while (true) {
         lighting_tick();

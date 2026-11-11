@@ -22,13 +22,15 @@ button{font:inherit;font-weight:650;border:0;border-radius:10px;background:#8cd2
 <label for="brightness">日常亮度 <output id="brightnessValue">25</output>%</label><input id="brightness" name="brightness" type="range" min="1" max="100" value="25">
 <label><input id="auto_dim" name="auto_dim" type="checkbox" value="1" checked>夜间自动调整亮度</label>
 <div id="nightBrightnessRow"><label for="night_brightness">夜间亮度 <output id="nightBrightnessValue">8</output>%</label><input id="night_brightness" name="night_brightness" type="range" min="1" max="100" value="8"></div>
-<small>夜间开始后使用夜间亮度，次日白天开始时恢复日常亮度，切换时缓慢渐变。关闭自动调整后，全天使用日常亮度。</small>
-<p>北京时间，24 小时制。点缀配色的开始时间：</p><div class="row">
-<div><label for="day">白天</label><input id="day" name="day" type="time" required value="06:00"></div>
-<div><label for="dusk">黄昏</label><input id="dusk" name="dusk" type="time" required value="17:00"></div>
-<div><label for="night">夜间</label><input id="night" name="night" type="time" required value="19:00"></div></div>
-<small>背景始终为纯黑色；三个时段控制点缀色，白天和夜间时间同时用于亮度计划。</small></section>
+<small>自动调暗沿用设备已保存的时段。关闭后全天使用日常亮度。</small></section>
 <button id="save" disabled>保存并重启</button><p id="result" role="status"></p></form>
+<section><form id="rgbForm"><h2>机箱灯光</h2>
+<label for="rgbMode">效果</label><select id="rgbMode" name="mode"><option value="0">关闭</option><option value="1">纯色常亮</option><option value="2">彩虹渐变</option><option value="3">单色呼吸</option><option value="4">随音量变化</option></select>
+<label for="rgbColor">颜色</label><input id="rgbColor" name="color" type="color" value="#66bbff">
+<label for="rgbBrightness">亮度 <output id="rgbBrightnessValue">9</output>%</label><input id="rgbBrightness" name="brightness" type="range" min="0" max="100" value="9">
+<small>五颗灯同步。拾音模式按麦克风音量改变亮度。</small>
+<button id="rgbSave" class="secondary" disabled>应用灯光</button><p id="rgbStatus" role="status"></p>
+</form></section>
 <p>以后修改设置：手机连接同一路由器，打开 <a href="http://computerscreen.local/">computerscreen.local</a>，建议收藏。若访问不了，可在路由器设备列表中查找 computerscreen。每次上电会开放临时设置热点；连接原网络失败时也会自动恢复热点，无需拆机按键。</p>
 <section><h2>固件升级</h2><p id="firmwareInfo" role="status">正在读取固件版本…</p>
 <p>选择本项目提供的 OTA 升级文件，通过 Wi-Fi 更新，无需拆机接 USB。升级保留已保存的网络、城市、天气密钥和亮度。</p>
@@ -37,4 +39,44 @@ button{font:inherit;font-weight:650;border:0;border-radius:10px;background:#8cd2
 <button id="upgrade" class="secondary" type="button" disabled>上传并升级</button>
 <progress id="upgradeProgress" value="0" max="100" style="width:100%;margin-top:14px" hidden></progress>
 <p id="upgradeStatus" role="status">升级时保持供电。上传或校验失败会继续使用原版本，新版本首次启动失败时支持回退。</p>
-</section></main><script src="/portal.js"></script><script src="/ota.js"></script></html>
+</section></main><script src="/portal.js"></script><script src="/ota.js"></script>
+<script>
+(() => {
+  const form = document.getElementById('rgbForm');
+  const mode = document.getElementById('rgbMode');
+  const color = document.getElementById('rgbColor');
+  const brightness = document.getElementById('rgbBrightness');
+  const output = document.getElementById('rgbBrightnessValue');
+  const button = document.getElementById('rgbSave');
+  const status = document.getElementById('rgbStatus');
+  function syncFields() {
+    output.value = brightness.value;
+    color.disabled = mode.value === '0' || mode.value === '2';
+    brightness.disabled = mode.value === '0';
+  }
+  mode.onchange = brightness.oninput = syncFields;
+  fetch('/api/rgb', {cache:'no-store'}).then(response => {
+    if (!response.ok) throw new Error();
+    return response.json();
+  }).then(settings => {
+    mode.value = settings.mode;
+    color.value = settings.color;
+    brightness.value = settings.brightness;
+    syncFields();
+    button.disabled = false;
+  }).catch(() => { status.textContent = '灯光设置读取失败，请刷新重试'; });
+  form.onsubmit = async event => {
+    event.preventDefault();
+    button.disabled = true;
+    try {
+      const body = new URLSearchParams({mode: mode.value, color: color.value, brightness: brightness.value});
+      const response = await fetch('/api/rgb', {method:'POST', body, headers:{'X-ComputerScreen-Setup':'1'}});
+      status.textContent = await response.text();
+    } catch {
+      status.textContent = '连接失败，请重试';
+    } finally {
+      button.disabled = false;
+    }
+  };
+})();
+</script></html>

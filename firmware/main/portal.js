@@ -119,7 +119,7 @@ async function load() {
     }
     $('manual_ssid').value = originalSSID;
     loadCities(await cityResponse.json(), state.get('city') || '');
-    for (const name of ['brightness','day','dusk','night']) $(name).value = state.get(name) || '';
+    $('brightness').value = state.get('brightness') || '';
     $('auto_dim').checked = state.get('auto_dim') !== '0';
     $('night_brightness').value = state.get('night_brightness') || String(Math.min(Number(state.get('brightness')) || 25, 8));
     $('night_brightness').oninput();
@@ -155,9 +155,6 @@ form.onsubmit = async event => {
   }
   if (!$('open_wifi').checked && ((!hasPassword || ssid !== originalSSID) && password.length < 8 || password && password.length < 8)) {
     result.textContent = '请填写至少 8 位 Wi-Fi 密码，或勾选开放网络。'; return;
-  }
-  if (!(values.get('day') < values.get('dusk') && values.get('dusk') < values.get('night'))) {
-    result.textContent = '请按白天、黄昏、夜间的顺序设置开始时间。'; return;
   }
   button.disabled = true;
   form.dataset.saving = '1';

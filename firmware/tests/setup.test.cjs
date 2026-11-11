@@ -17,7 +17,7 @@ async function setup(overrides={},networks=[{ssid:'Home',rssi:-44,secure:true},{
   const elements=new Map(),posts=[],urls=[];
   const element=id=>{if(!elements.has(id))elements.set(id,new Element(['ssid','province','city'].includes(id)));return elements.get(id);};
   const state=new URLSearchParams({ssid:'Home',city:'贵阳',brightness:'25',day:'06:00',dusk:'17:00',night:'19:00',has_password:'1',has_key:'1',online:'1',synced:'1',...overrides});
-  class FormDataMock extends Map{constructor(){super(['ssid','password','city','api_key','brightness','day','dusk','night'].map(key=>[key,element(key).value]));if(element('open_wifi').checked)this.set('open_wifi','1');}}
+  class FormDataMock extends Map{constructor(){super(['ssid','password','city','api_key','brightness'].map(key=>[key,element(key).value]));if(element('open_wifi').checked)this.set('open_wifi','1');}}
   const context={URLSearchParams,TextEncoder,FormData:FormDataMock,setTimeout,
     Option:function(text,value){return {text,value,dataset:{}};},document:{getElementById:element},
     fetch:async(url,options)=>{
@@ -53,7 +53,8 @@ async function setup(overrides={},networks=[{ssid:'Home',rssi:-44,secure:true},{
 
   ui=await setup();ui.element('manual_wifi').checked=true;ui.element('manual_wifi').onchange();ui.element('manual_ssid').value='中'.repeat(11);await ui.submit();assert.equal(ui.posts.length,0);
 
-  ui=await setup();ui.element('day').value='20:00';await ui.submit();assert.equal(ui.posts.length,0);
+  ui=await setup();await ui.submit();assert.equal(ui.posts.length,1);
+  for (const name of ['day','dusk','night']) assert.equal(new URLSearchParams(ui.posts[0].body).has(name),false);
 
   ui=await setup({ssid:'',city:'',has_password:'0'});ui.element('ssid').value='Home';ui.element('password').value='12345678';await ui.submit();assert.equal(ui.posts.length,0,'Initial configuration requires a city selection');
 

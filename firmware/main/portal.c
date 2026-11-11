@@ -10,6 +10,7 @@
 #include "weather.h"
 #include "ota_update.h"
 #include "lighting.h"
+#include "case_environment.h"
 #include "setup_request.h"
 #include "city_ids.h"
 #include "cJSON.h"
@@ -71,6 +72,22 @@ static esp_err_t state(httpd_req_t *req)
         (unsigned long)lighting->auto_dim, (unsigned long)lighting->night_brightness, lighting_current());
     no_cache(req);
     httpd_resp_set_type(req, "application/x-www-form-urlencoded; charset=utf-8");
+    return httpd_resp_sendstr(req, body);
+}
+
+static esp_err_t environment_state(httpd_req_t *req)
+{
+    case_environment_t environment;
+    case_environment_status(&environment);
+    char body[256];
+    if (environment.valid)
+        snprintf(body, sizeof(body), "{\"valid\":true,\"temperature\":%.2f,\"humidity\":%.2f,\"error\":\"ESP_OK\"}",
+                 environment.temperature, environment.humidity);
+    else
+        snprintf(body, sizeof(body), "{\"valid\":false,\"temperature\":null,\"humidity\":null,\"error\":\"%s\"}",
+                 esp_err_to_name(environment.error));
+    no_cache(req);
+    httpd_resp_set_type(req, "application/json");
     return httpd_resp_sendstr(req, body);
 }
 
@@ -210,9 +227,10 @@ static esp_err_t save(httpd_req_t *req)
         ok = ok && (next.password[0] || !strcmp(open, "1") ||
             (!strcmp(next.ssid, settings_get()->ssid) && !settings_get()->password[0]));
         ok = ok && (!next.password[0] || (strlen(next.password) >= 8 && strlen(next.password) <= 63));
-        ok = ok && form_get(body, "day", value, sizeof(value)) && form_minute(value, &next.day_start);
-        ok = ok && form_get(body, "dusk", value, sizeof(value)) && form_minute(value, &next.dusk_start);
-        ok = ok && form_get(body, "night", value, sizeof(value)) && form_minute(value, &next.night_start);
+        // Older setup clients may still send the three schedule fields.
+        ok = ok && form_get(body, "day", value, sizeof(value)) && (!value[0] || form_minute(value, &next.day_start));
+        ok = ok && form_get(body, "dusk", value, sizeof(value)) && (!value[0] || form_minute(value, &next.dusk_start));
+        ok = ok && form_get(body, "night", value, sizeof(value)) && (!value[0] || form_minute(value, &next.night_start));
     }
     free(body);
     if (!ok || next.day_start >= next.dusk_start || next.dusk_start >= next.night_start) {
@@ -229,17 +247,64 @@ static esp_err_t save(httpd_req_t *req)
     return httpd_resp_sendstr(req, "已保存，设备即将重启。请等待联网；连接失败时，设置热点会在约 30 秒后重新出现。");
 }
 
+static esp_err_t rgb_state(httpd_req_t *req)
+{
+    rgb_settings_t rgb = settings_get_rgb();
+    char body[128];
+    snprintf(body, sizeof(body), "{\"mode\":%u,\"color\":\"#%06x\",\"brightness\":%u,\"volume\":%u,\"input\":%u}",
+             (unsigned)rgb.mode, (unsigned)rgb.color, (unsigned)rgb.brightness,
+             case_sound_level(), case_sound_input());
+    no_cache(req);
+    httpd_resp_set_type(req, "application/json");
+    return httpd_resp_sendstr(req, body);
+}
+
+static esp_err_t rgb_save(httpd_req_t *req)
+{
+    no_cache(req);
+    char body[128], mode[4], color[8], brightness[5];
+    if (reboot_pending || !computerscreen_setup_request(req) ||
+        req->content_len == 0 || req->content_len >= sizeof(body))
+        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "灯光设置请求无效");
+    size_t received = 0;
+    while (received < req->content_len) {
+        int count = httpd_req_recv(req, body + received, req->content_len - received);
+        if (count <= 0) return httpd_resp_send_err(req, HTTPD_408_REQ_TIMEOUT, "读取超时，请重试");
+        received += count;
+    }
+    body[received] = 0;
+    if (memchr(body, 0, received) ||
+        !form_get(body, "mode", mode, sizeof(mode)) || strlen(mode) != 1 || mode[0] < '0' ||
+        mode[0] >= '0' + RGB_MODE_COUNT ||
+        !form_get(body, "color", color, sizeof(color)) || color[0] != '#' ||
+        strlen(color) != 7 || strspn(color + 1, "0123456789abcdefABCDEF") != 6 ||
+        !form_get(body, "brightness", brightness, sizeof(brightness)) || !brightness[0] ||
+        strspn(brightness, "0123456789") != strlen(brightness) || strtoul(brightness, NULL, 10) > 100)
+        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "请检查模式、颜色和亮度");
+    rgb_settings_t rgb = {
+        .mode = mode[0] - '0', .color = strtoul(color + 1, NULL, 16),
+        .brightness = strtoul(brightness, NULL, 10),
+    };
+    if (settings_save_rgb(rgb) != ESP_OK)
+        return httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "灯光设置保存失败");
+    httpd_resp_set_type(req, "text/plain; charset=utf-8");
+    return httpd_resp_sendstr(req, "灯光已保存并生效");
+}
+
 void portal_init(void)
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
     config.stack_size = 8192;
-    config.max_uri_handlers = 10;
+    config.max_uri_handlers = 12;
     config.lru_purge_enable = true;
     httpd_handle_t server;
     ESP_ERROR_CHECK(httpd_start(&server, &config));
     const httpd_uri_t routes[] = {
         {.uri="/", .method=HTTP_GET, .handler=page},
         {.uri="/api/state", .method=HTTP_GET, .handler=state},
+        {.uri="/api/environment", .method=HTTP_GET, .handler=environment_state},
+        {.uri="/api/rgb", .method=HTTP_GET, .handler=rgb_state},
+        {.uri="/api/rgb", .method=HTTP_POST, .handler=rgb_save},
         {.uri="/api/cities", .method=HTTP_GET, .handler=cities},
         {.uri="/api/wifi", .method=HTTP_GET, .handler=wifi_scan},
         {.uri="/portal.js", .method=HTTP_GET, .handler=javascript},

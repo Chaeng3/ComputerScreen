@@ -4,12 +4,20 @@
 #include "nvs_flash.h"
 #include "nvs.h"
 #include "esp_log.h"
+#include "freertos/FreeRTOS.h"
 
 // Legacy NVS namespace is a storage compatibility key, not the product name.
 #define SETTINGS_VERSION 1
 _Static_assert(sizeof(app_settings_t) == 312, "Keep the v1 NVS settings layout compatible with baseline OTA firmware");
 static app_settings_t current;
 static lighting_settings_t current_lighting;
+static rgb_settings_t current_rgb = {RGB_RAINBOW, 0x66bbff, 9};
+static portMUX_TYPE rgb_lock = portMUX_INITIALIZER_UNLOCKED;
+
+static bool valid_rgb(rgb_settings_t rgb)
+{
+    return rgb.mode < RGB_MODE_COUNT && rgb.color <= 0xffffff && rgb.brightness <= 100;
+}
 
 static bool valid_lighting(const lighting_settings_t *s)
 {
@@ -55,6 +63,10 @@ void settings_init(void)
         size_t size = sizeof(stored);
         if (nvs_get_blob(handle, "lighting", &stored, &size) == ESP_OK &&
             size == sizeof(stored) && valid_lighting(&stored)) current_lighting = stored;
+        rgb_settings_t rgb;
+        size = sizeof(rgb);
+        if (nvs_get_blob(handle, "rgb_v1", &rgb, &size) == ESP_OK &&
+            size == sizeof(rgb) && valid_rgb(rgb)) current_rgb = rgb;
         nvs_close(handle);
     }
     ESP_LOGI("settings", "Configuration loaded; Wi-Fi %s", current.ssid[0] ? "configured" : "not configured");
@@ -62,6 +74,31 @@ void settings_init(void)
 
 const app_settings_t *settings_get(void) { return &current; }
 const lighting_settings_t *settings_get_lighting(void) { return &current_lighting; }
+
+rgb_settings_t settings_get_rgb(void)
+{
+    portENTER_CRITICAL(&rgb_lock);
+    rgb_settings_t rgb = current_rgb;
+    portEXIT_CRITICAL(&rgb_lock);
+    return rgb;
+}
+
+esp_err_t settings_save_rgb(rgb_settings_t rgb)
+{
+    if (!valid_rgb(rgb)) return ESP_ERR_INVALID_ARG;
+    nvs_handle_t handle;
+    esp_err_t err = nvs_open("case_display", NVS_READWRITE, &handle);
+    if (err != ESP_OK) return err;
+    err = nvs_set_blob(handle, "rgb_v1", &rgb, sizeof(rgb));
+    if (err == ESP_OK) err = nvs_commit(handle);
+    nvs_close(handle);
+    if (err == ESP_OK) {
+        portENTER_CRITICAL(&rgb_lock);
+        current_rgb = rgb;
+        portEXIT_CRITICAL(&rgb_lock);
+    }
+    return err;
+}
 
 esp_err_t settings_save(const app_settings_t *settings, const lighting_settings_t *lighting)
 {
