@@ -6,6 +6,7 @@ ComputerScreen · 机箱副屏
 <img width="4000" height="2252" alt="20261109_220721" src="https://github.com/user-attachments/assets/83700124-176b-4ebf-80ec-0377d8a0826e" />
 
 演示视频：https://www.bilibili.com/video/BV1YDWb6NE8w
+
 硬件开源地址：https://oshwhub.com/chaeng/project_pbqsecer?jspm=hub.zy.zp.gc1___hub.hm.zp&jlc_vid=E1hXVwUFRVJcU11TRAVeVVJQEQVaBFZQEVVbVgBfQVExVlNfQ1VZVVFVQFJZVDtWKAkaExQVTU5BCBcOAAkbBUoFGAw%3D
 
 ## 两代硬件
