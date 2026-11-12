@@ -4,8 +4,6 @@ ComputerScreen · 机箱副屏
 
 <img width="4000" height="2252" alt="20261109_220316" src="https://github.com/user-attachments/assets/995b4924-a471-421d-a103-dd5a28ed73fb" />
 
-<img width="4000" height="2252" alt="20261030_222934" src="https://github.com/user-attachments/assets/6e23349a-e66c-4870-9e2a-1af23a02605f" />
-
 ## 两代硬件
 
 | 版本 | 硬件与环境 | 功能及入口 |
