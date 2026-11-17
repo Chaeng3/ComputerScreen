@@ -9,6 +9,12 @@ ComputerScreen · 机箱副屏
 
 硬件开源地址：https://oshwhub.com/chaeng/project_pbqsecer?jspm=hub.zy.zp.gc1___hub.hm.zp&jlc_vid=E1hXVwUFRVJcU11TRAVeVVJQEQVaBFZQEVVbVgBfQVExVlNfQ1VZVVFVQFJZVDtWKAkaExQVTU5BCBcOAAkbBUoFGAw%3D
 
+## 最新更新
+
+**2026-11-17 · GPIO38 温度指示灯**
+
+GPIO38 状态 LED 与屏幕温度彗星共用同一套渐变色，温度在同一温区内变化时，LED 颜色也会逐渐变化。此次更新为源码修复，固件版本号仍为 3.5.13-ota。对应源码提交为 [20e2cb3](https://github.com/Chaeng3/ComputerScreen/commit/20e2cb3)。
+
 ## 两代硬件
 
 | 版本 | 硬件与环境 | 功能及入口 |
