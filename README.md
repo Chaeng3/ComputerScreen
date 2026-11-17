@@ -72,10 +72,10 @@ Wi-Fi 密码和天气私钥保存于设备，不写入源码，也不会在设�
 
 当前版本：**3.5.13-ota**。
 
-- [下载 OTA 应用固件](firmware/release/ComputerScreen-3.5.13-ota.bin)
-- [文件大小及 SHA-256 清单](firmware/release/ComputerScreen-3.5.13-ota.bin.json)
-- [首次 USB 安装文件与说明](firmware/release/README.md)
-- [无线升级使用说明](firmware/OTA.md)
+- [下载 OTA 应用固件](https://raw.githubusercontent.com/Chaeng3/ComputerScreen/20e2cb340a8172ee038b39e01b8ab86cad83e5fc/firmware/release/ComputerScreen-3.5.13-ota.bin)
+- [文件大小及 SHA-256 清单](https://github.com/Chaeng3/ComputerScreen/blob/20e2cb340a8172ee038b39e01b8ab86cad83e5fc/firmware/release/ComputerScreen-3.5.13-ota.bin.json)
+- [首次 USB 安装文件与说明](https://github.com/Chaeng3/ComputerScreen/blob/20e2cb340a8172ee038b39e01b8ab86cad83e5fc/firmware/release/README.md)
+- [无线升级使用说明](https://github.com/Chaeng3/ComputerScreen/blob/20e2cb340a8172ee038b39e01b8ab86cad83e5fc/firmware/OTA.md)
 
 已经安装 ComputerScreen 版本时，在设置页的“固件升级”中选择上述 `.bin` 文件，上传后等待校验和自动重启。配置会保留。上传中断或镜像校验失败时，原版本仍可使用。
 
