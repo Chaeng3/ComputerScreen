@@ -155,21 +155,8 @@ static void weather_page(int page, int shift, const unsigned selected[3], const 
 
 static uint16_t comet_ink(float temperature)
 {
-    static const struct { float temperature; uint8_t red, green, blue; } palette[] = {
-        {16.0f, 52, 108, 255}, {25.0f, 45, 219, 237},
-        {40.0f, 255, 177, 52}, {50.0f, 255, 48, 48},
-    };
-    unsigned i = 0;
-    while (i + 2 < sizeof(palette) / sizeof(palette[0]) &&
-           temperature > palette[i + 1].temperature) ++i;
-    float fraction = (temperature - palette[i].temperature) /
-                     (palette[i + 1].temperature - palette[i].temperature);
-    if (fraction < 0.0f) fraction = 0.0f;
-    if (fraction > 1.0f) fraction = 1.0f;
-    unsigned red = palette[i].red + (palette[i + 1].red - palette[i].red) * fraction;
-    unsigned green = palette[i].green + (palette[i + 1].green - palette[i].green) * fraction;
-    unsigned blue = palette[i].blue + (palette[i + 1].blue - palette[i].blue) * fraction;
-    return ((red & 0xf8) << 8) | ((green & 0xfc) << 3) | (blue >> 3);
+    uint32_t rgb = case_temperature_color(temperature);
+    return ((rgb >> 8) & 0xf800) | ((rgb >> 5) & 0x07e0) | ((rgb >> 3) & 0x001f);
 }
 
 static float comet_ease(int64_t elapsed)

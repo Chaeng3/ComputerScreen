@@ -89,10 +89,21 @@ static void led_write(const led_output_t *output, const uint32_t *pixels, unsign
 
 uint32_t case_temperature_color(float temperature)
 {
-    if (temperature < 30.0f) return 0x4a94ff;
-    if (temperature < 40.0f) return 0x30dcc9;
-    if (temperature < 50.0f) return 0xffab30;
-    return 0xff3030;
+    static const struct { float temperature; uint8_t red, green, blue; } palette[] = {
+        {16.0f, 52, 108, 255}, {25.0f, 45, 219, 237},
+        {40.0f, 255, 177, 52}, {50.0f, 255, 48, 48},
+    };
+    unsigned i = 0;
+    while (i + 2 < sizeof(palette) / sizeof(palette[0]) &&
+           temperature > palette[i + 1].temperature) ++i;
+    float fraction = (temperature - palette[i].temperature) /
+                     (palette[i + 1].temperature - palette[i].temperature);
+    if (fraction < 0.0f) fraction = 0.0f;
+    if (fraction > 1.0f) fraction = 1.0f;
+    unsigned red = palette[i].red + (palette[i + 1].red - palette[i].red) * fraction;
+    unsigned green = palette[i].green + (palette[i + 1].green - palette[i].green) * fraction;
+    unsigned blue = palette[i].blue + (palette[i + 1].blue - palette[i].blue) * fraction;
+    return (red << 16) | (green << 8) | blue;
 }
 
 unsigned case_sound_level(void)
